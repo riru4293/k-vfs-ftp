@@ -65,7 +65,7 @@ class FtpConnectionTimeoutTest {
     void testConstructor_IllegalJsonValue() {
 
         assertThatIllegalArgumentException().isThrownBy(() -> new FtpConnectionTimeout(JsonValue.NULL))
-                .withMessage("FileOption value of [%s] must be duration.", "ftp:connectTimeout");
+                .withMessage("FileOption value of [%s] must be duration.", "ftp:connectionTimeout");
 
     }
 
@@ -128,7 +128,7 @@ class FtpConnectionTimeoutTest {
 
         var result = new FtpConnectionTimeout(Duration.ZERO).toString();
 
-        assertThat(result).isEqualTo("{\"ftp:connectTimeout\":\"PT0S\"}");
+        assertThat(result).isEqualTo("{\"ftp:connectionTimeout\":\"PT0S\"}");
 
     }
 

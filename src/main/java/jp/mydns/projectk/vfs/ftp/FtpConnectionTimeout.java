@@ -50,7 +50,7 @@ import org.apache.commons.vfs2.provider.ftp.FtpFileSystemConfigBuilder;
  * @since 1.0.0
  * @see FtpFileSystemConfigBuilder#getConnectTimeoutDuration(org.apache.commons.vfs2.FileSystemOptions)
  */
-@FileOption.Name("ftp:connectTimeout")
+@FileOption.Name("ftp:connectionTimeout")
 public class FtpConnectionTimeout extends FtpDurationOption {
 
     /**
@@ -63,7 +63,7 @@ public class FtpConnectionTimeout extends FtpDurationOption {
      */
     public FtpConnectionTimeout(JsonValue value) {
 
-        this(requireDuration(value, "ftp:connectTimeout"));
+        this(requireDuration(value, "ftp:connectionTimeout"));
 
     }
 
