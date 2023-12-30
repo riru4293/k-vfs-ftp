@@ -29,13 +29,14 @@ import jakarta.json.Json;
 import jakarta.json.JsonValue;
 import java.util.Objects;
 import java.util.ServiceLoader;
+import jp.mydns.projectk.vfs.AbstractFileOption;
 import jp.mydns.projectk.vfs.FileOption;
 import static jp.mydns.projectk.vfs.FileOptionSourceValidator.requireBoolean;
 import org.apache.commons.vfs2.FileSystemOptions;
 import org.apache.commons.vfs2.provider.ftp.FtpFileSystemConfigBuilder;
 
 /**
- * Use remote verification.
+ * Whether to use remote verification.
  * <p>
  * Implementation requirements.
  * <ul>
@@ -50,7 +51,21 @@ import org.apache.commons.vfs2.provider.ftp.FtpFileSystemConfigBuilder;
  * @see FtpFileSystemConfigBuilder#getRemoteVerification(org.apache.commons.vfs2.FileSystemOptions)
  */
 @FileOption.Name("ftp:useRemoteVerification")
-public class UseFtpRemoteVerification extends FtpBooleanOption {
+public class UseFtpRemoteVerification extends AbstractFileOption {
+
+    private final boolean value;
+
+    /**
+     * Constructor.
+     *
+     * @param value option value
+     * @since 1.0.0
+     */
+    public UseFtpRemoteVerification(boolean value) {
+
+        this.value = value;
+
+    }
 
     /**
      * Constructor.
@@ -62,25 +77,27 @@ public class UseFtpRemoteVerification extends FtpBooleanOption {
      */
     public UseFtpRemoteVerification(JsonValue value) {
 
-        this(requireBoolean(value, "ftp:useRemoteVerification"));
-
-    }
-
-    /**
-     * Constructor.
-     *
-     * @param value option value
-     * @since 1.0.0
-     */
-    public UseFtpRemoteVerification(boolean value) {
-
-        super(value);
+        this.value = requireBoolean(value, "ftp:useRemoteVerification");
 
     }
 
     /**
      * {@inheritDoc}
      *
+     * @since 1.0.0
+     */
+    @Override
+    public JsonValue getValue() {
+
+        return value ? JsonValue.TRUE : JsonValue.FALSE;
+
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param opts the {@code FileSystemOptions}. This value will be modified.
+     * @throws NullPointerException if {@code opts} is {@code null}
      * @since 1.0.0
      */
     @Override
@@ -109,7 +126,7 @@ public class UseFtpRemoteVerification extends FtpBooleanOption {
      * Indicates that other object is equal to this one.
      *
      * @param other an any object
-     * @return {@code true} if equals otherwise {@code false}
+     * @return {@code true} if equals, otherwise {@code false}.
      * @since 1.0.0
      */
     @Override
