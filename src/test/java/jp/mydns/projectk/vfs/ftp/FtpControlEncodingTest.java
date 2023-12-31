@@ -27,6 +27,7 @@ package jp.mydns.projectk.vfs.ftp;
 
 import jakarta.json.Json;
 import jakarta.json.JsonValue;
+import java.nio.charset.StandardCharsets;
 import org.apache.commons.vfs2.FileSystemException;
 import org.apache.commons.vfs2.FileSystemOptions;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -51,8 +52,8 @@ class FtpControlEncodingTest {
     @Test
     void testConstructor_JsonValue() {
 
-        assertThat(new FtpControlEncoding(Json.createValue("txt")).getValue())
-                .isEqualTo(Json.createValue("txt"));
+        assertThat(new FtpControlEncoding(Json.createValue("UTF-8")).getValue())
+                .isEqualTo(Json.createValue("UTF-8"));
 
     }
 
@@ -65,20 +66,20 @@ class FtpControlEncodingTest {
     void testConstructor_IllegalJsonValue() {
 
         assertThatIllegalArgumentException().isThrownBy(() -> new FtpControlEncoding(JsonValue.NULL))
-                .withMessage("FileOption value of [%s] must be string.", "ftp:controlEncoding");
+                .withMessage("FileOption value of [%s] must be charset name.", "ftp:controlEncoding");
 
     }
 
     /**
-     * Test constructor. If argument is valid {@code Duration}.
+     * Test constructor. If argument is valid {@code Charset}.
      *
      * @since 1.0.0
      */
     @Test
-    void testConstructor_Duration() {
+    void testConstructor_Charset() {
 
-        assertThat(new FtpControlEncoding("txt").getValue())
-                .isEqualTo(Json.createValue("txt"));
+        assertThat(new FtpControlEncoding(StandardCharsets.US_ASCII).getValue())
+                .isEqualTo(Json.createValue("US-ASCII"));
 
     }
 
@@ -92,13 +93,13 @@ class FtpControlEncodingTest {
 
         FileSystemOptions opts = new FileSystemOptions();
 
-        new FtpControlEncoding.Resolver().newInstance(Json.createValue("hello")).apply(opts);
+        new FtpControlEncoding.Resolver().newInstance(Json.createValue("UTF-8")).apply(opts);
 
-        assertThat(extractValue(opts)).isEqualTo("hello");
+        assertThat(extractValue(opts)).isEqualTo("UTF-8");
 
-        new FtpControlEncoding.Resolver().newInstance(Json.createValue("another")).apply(opts);
+        new FtpControlEncoding.Resolver().newInstance(Json.createValue("US-ASCII")).apply(opts);
 
-        assertThat(extractValue(opts)).isEqualTo("another");
+        assertThat(extractValue(opts)).isEqualTo("US-ASCII");
 
     }
 
@@ -110,9 +111,9 @@ class FtpControlEncodingTest {
     @Test
     void testEqualsHashCode() {
 
-        FtpControlEncoding base = new FtpControlEncoding("text");
-        FtpControlEncoding same = new FtpControlEncoding("text");
-        FtpControlEncoding another = new FtpControlEncoding("another");
+        FtpControlEncoding base = new FtpControlEncoding(StandardCharsets.ISO_8859_1);
+        FtpControlEncoding same = new FtpControlEncoding(StandardCharsets.ISO_8859_1);
+        FtpControlEncoding another = new FtpControlEncoding(StandardCharsets.UTF_16);
 
         assertThat(base).hasSameHashCodeAs(same).isEqualTo(same)
                 .doesNotHaveSameHashCodeAs(another).isNotEqualTo(another);
@@ -127,9 +128,9 @@ class FtpControlEncodingTest {
     @Test
     void testToString() {
 
-        var result = new FtpControlEncoding("Hello FTP").toString();
+        var result = new FtpControlEncoding(StandardCharsets.UTF_16BE).toString();
 
-        assertThat(result).isEqualTo("{\"ftp:controlEncoding\":\"Hello FTP\"}");
+        assertThat(result).isEqualTo("{\"ftp:controlEncoding\":\"UTF-16BE\"}");
 
     }
 

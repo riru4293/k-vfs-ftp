@@ -60,13 +60,12 @@ public class FtpTransferAbortedOkReplyCodes extends AbstractFileOption {
      * Constructor.
      *
      * @param values option values
-     * @throws NullPointerException if {@code values} is {@code null}
-     * @throws IllegalArgumentException if {@code values} is not convertible to type {@code List<Integer>}
+     * @throws NullPointerException if {@code values} is {@code null} or if contains {@code null} in {@code values}.
      * @since 1.0.0
      */
-    public FtpTransferAbortedOkReplyCodes(JsonValue values) {
+    public FtpTransferAbortedOkReplyCodes(List<Integer> values) {
 
-        this.values = requireIntList(Objects.requireNonNull(values), "ftp:transferAbortedOkReplyCodes");
+        this.values = List.copyOf(Objects.requireNonNull(values));
 
     }
 
@@ -74,12 +73,13 @@ public class FtpTransferAbortedOkReplyCodes extends AbstractFileOption {
      * Constructor.
      *
      * @param values option values
-     * @throws NullPointerException if {@code values} is {@code null} or if contains {@code null} in {@code values}.
+     * @throws NullPointerException if {@code values} is {@code null}
+     * @throws IllegalArgumentException if {@code values} is not convertible to type {@code List<Integer>}
      * @since 1.0.0
      */
-    protected FtpTransferAbortedOkReplyCodes(List<Integer> values) {
+    public FtpTransferAbortedOkReplyCodes(JsonValue values) {
 
-        this.values = List.copyOf(Objects.requireNonNull(values));
+        this.values = requireIntList(Objects.requireNonNull(values), "ftp:transferAbortedOkReplyCodes");
 
     }
 
@@ -98,6 +98,8 @@ public class FtpTransferAbortedOkReplyCodes extends AbstractFileOption {
     /**
      * {@inheritDoc}
      *
+     * @param opts the {@code FileSystemOptions}. This value will be modified.
+     * @throws NullPointerException if {@code opts} is {@code null}
      * @since 1.0.0
      */
     @Override

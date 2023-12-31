@@ -62,6 +62,28 @@ public class FtpProxy extends AbstractFileOption {
     /**
      * Constructor.
      *
+     * @param type the {@code Proxy.Type}
+     * @param host host name of proxy
+     * @param port port number of proxy
+     * @throws NullPointerException if any argument is {@code null}
+     * @throws IllegalArgumentException if {@code type} is {@link Proxy.Type#DIRECT} or if {@code host} is invalid as
+     * host name or if {@code port} is out of range.
+     * @since 1.0.0
+     */
+    public FtpProxy(Proxy.Type type, String host, int port) {
+
+        Objects.requireNonNull(type);
+        Objects.requireNonNull(host);
+
+        this.host = host;
+        this.port = port;
+        this.value = new Proxy(type, new InetSocketAddress(host, port));
+
+    }
+
+    /**
+     * Constructor.
+     *
      * @param value option value
      * @throws NullPointerException if {@code value} is {@code null}
      * @throws IllegalArgumentException if {@code value} is not convertible to type {@link Proxy}
@@ -91,28 +113,6 @@ public class FtpProxy extends AbstractFileOption {
     }
 
     /**
-     * Constructor.
-     *
-     * @param type the {@code Proxy.Type}
-     * @param host host name of proxy
-     * @param port port number of proxy
-     * @throws NullPointerException if any argument is {@code null}
-     * @throws IllegalArgumentException if {@code type} is {@link Proxy.Type#DIRECT} or if {@code host} is invalid as
-     * host name or if {@code port} is out of range.
-     * @since 1.0.0
-     */
-    protected FtpProxy(Proxy.Type type, String host, int port) {
-
-        Objects.requireNonNull(type);
-        Objects.requireNonNull(host);
-
-        this.host = host;
-        this.port = port;
-        this.value = new Proxy(type, new InetSocketAddress(host, port));
-
-    }
-
-    /**
      * {@inheritDoc}
      *
      * @since 1.0.0
@@ -128,6 +128,8 @@ public class FtpProxy extends AbstractFileOption {
     /**
      * {@inheritDoc}
      *
+     * @param opts the {@code FileSystemOptions}. This value will be modified.
+     * @throws NullPointerException if {@code opts} is {@code null}
      * @since 1.0.0
      */
     @Override

@@ -29,6 +29,7 @@ import jakarta.json.Json;
 import jakarta.json.JsonValue;
 import java.util.Objects;
 import java.util.ServiceLoader;
+import jp.mydns.projectk.vfs.AbstractFileOption;
 import jp.mydns.projectk.vfs.FileOption;
 import static jp.mydns.projectk.vfs.FileOptionSourceValidator.requireString;
 import org.apache.commons.vfs2.FileSystemOptions;
@@ -50,7 +51,22 @@ import org.apache.commons.vfs2.provider.ftp.FtpFileSystemConfigBuilder;
  * @see FtpFileSystemConfigBuilder#getDefaultDateFormat(org.apache.commons.vfs2.FileSystemOptions)
  */
 @FileOption.Name("ftp:defaultDateFormat")
-public class FtpDefaultDateFormat extends FtpStringOption {
+public class FtpDefaultDateFormat extends AbstractFileOption {
+
+    private final String value;
+
+    /**
+     * Constructor.
+     *
+     * @param value option value
+     * @throws NullPointerException if {@code value} is {@code null}
+     * @since 1.0.0
+     */
+    public FtpDefaultDateFormat(String value) {
+
+        this.value = Objects.requireNonNull(value);
+
+    }
 
     /**
      * Constructor.
@@ -62,26 +78,27 @@ public class FtpDefaultDateFormat extends FtpStringOption {
      */
     public FtpDefaultDateFormat(JsonValue value) {
 
-        this(requireString(value, "ftp:defaultDateFormat"));
-
-    }
-
-    /**
-     * Constructor.
-     *
-     * @param value option value
-     * @throws NullPointerException if {@code value} is {@code null}
-     * @since 1.0.0
-     */
-    public FtpDefaultDateFormat(String value) {
-
-        super(value);
+        this.value = requireString(Objects.requireNonNull(value), "ftp:defaultDateFormat");
 
     }
 
     /**
      * {@inheritDoc}
      *
+     * @since 1.0.0
+     */
+    @Override
+    public JsonValue getValue() {
+
+        return Json.createValue(value);
+
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param opts the {@code FileSystemOptions}. This value will be modified.
+     * @throws NullPointerException if {@code opts} is {@code null}
      * @since 1.0.0
      */
     @Override

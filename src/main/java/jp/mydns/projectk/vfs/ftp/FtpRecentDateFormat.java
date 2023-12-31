@@ -29,6 +29,7 @@ import jakarta.json.Json;
 import jakarta.json.JsonValue;
 import java.util.Objects;
 import java.util.ServiceLoader;
+import jp.mydns.projectk.vfs.AbstractFileOption;
 import jp.mydns.projectk.vfs.FileOption;
 import static jp.mydns.projectk.vfs.FileOptionSourceValidator.requireString;
 import org.apache.commons.vfs2.FileSystemOptions;
@@ -50,7 +51,22 @@ import org.apache.commons.vfs2.provider.ftp.FtpFileSystemConfigBuilder;
  * @see FtpFileSystemConfigBuilder#getRecentDateFormat(org.apache.commons.vfs2.FileSystemOptions)
  */
 @FileOption.Name("ftp:recentDateFormat")
-public class FtpRecentDateFormat extends FtpStringOption {
+public class FtpRecentDateFormat extends AbstractFileOption {
+
+    private final String value;
+
+    /**
+     * Constructor.
+     *
+     * @param value option value
+     * @throws NullPointerException if {@code value} is {@code null}
+     * @since 1.0.0
+     */
+    public FtpRecentDateFormat(String value) {
+
+        this.value = Objects.requireNonNull(value);
+
+    }
 
     /**
      * Constructor.
@@ -62,26 +78,27 @@ public class FtpRecentDateFormat extends FtpStringOption {
      */
     public FtpRecentDateFormat(JsonValue value) {
 
-        this(requireString(value, "ftp:recentDateFormat"));
-
-    }
-
-    /**
-     * Constructor.
-     *
-     * @param value option value
-     * @throws NullPointerException if {@code value} is {@code null}
-     * @since 1.0.0
-     */
-    public FtpRecentDateFormat(String value) {
-
-        super(value);
+        this.value = requireString(Objects.requireNonNull(value), "ftp:recentDateFormat");
 
     }
 
     /**
      * {@inheritDoc}
      *
+     * @since 1.0.0
+     */
+    @Override
+    public JsonValue getValue() {
+
+        return Json.createValue(value);
+
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param opts the {@code FileSystemOptions}. This value will be modified.
+     * @throws NullPointerException if {@code opts} is {@code null}
      * @since 1.0.0
      */
     @Override

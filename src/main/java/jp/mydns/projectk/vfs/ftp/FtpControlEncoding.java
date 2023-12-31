@@ -27,15 +27,17 @@ package jp.mydns.projectk.vfs.ftp;
 
 import jakarta.json.Json;
 import jakarta.json.JsonValue;
+import java.nio.charset.Charset;
 import java.util.Objects;
 import java.util.ServiceLoader;
+import jp.mydns.projectk.vfs.AbstractFileOption;
 import jp.mydns.projectk.vfs.FileOption;
-import static jp.mydns.projectk.vfs.FileOptionSourceValidator.requireString;
+import static jp.mydns.projectk.vfs.FileOptionSourceValidator.requireCharset;
 import org.apache.commons.vfs2.FileSystemOptions;
 import org.apache.commons.vfs2.provider.ftp.FtpFileSystemConfigBuilder;
 
 /**
- * The encoding.
+ * Character set name to be used by the FTP control connection.
  * <p>
  * Implementation requirements.
  * <ul>
@@ -50,19 +52,20 @@ import org.apache.commons.vfs2.provider.ftp.FtpFileSystemConfigBuilder;
  * @see FtpFileSystemConfigBuilder#getControlEncoding(org.apache.commons.vfs2.FileSystemOptions)
  */
 @FileOption.Name("ftp:controlEncoding")
-public class FtpControlEncoding extends FtpStringOption {
+public class FtpControlEncoding extends AbstractFileOption {
+
+    private final Charset value;
 
     /**
      * Constructor.
      *
      * @param value option value
      * @throws NullPointerException if {@code value} is {@code null}
-     * @throws IllegalArgumentException if {@code value} type is not {@code JsonString}
      * @since 1.0.0
      */
-    public FtpControlEncoding(JsonValue value) {
+    public FtpControlEncoding(Charset value) {
 
-        this(requireString(value, "ftp:controlEncoding"));
+        this.value = Objects.requireNonNull(value);
 
     }
 
@@ -71,11 +74,12 @@ public class FtpControlEncoding extends FtpStringOption {
      *
      * @param value option value
      * @throws NullPointerException if {@code value} is {@code null}
+     * @throws IllegalArgumentException if {@code value} is not convertible to type {@code Charset}
      * @since 1.0.0
      */
-    public FtpControlEncoding(String value) {
+    public FtpControlEncoding(JsonValue value) {
 
-        super(value);
+        this.value = requireCharset(Objects.requireNonNull(value), "ftp:controlEncoding");
 
     }
 
@@ -85,11 +89,25 @@ public class FtpControlEncoding extends FtpStringOption {
      * @since 1.0.0
      */
     @Override
+    public JsonValue getValue() {
+
+        return Json.createValue(value.name());
+
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param opts the {@code FileSystemOptions}. This value will be modified.
+     * @throws NullPointerException if {@code opts} is {@code null}
+     * @since 1.0.0
+     */
+    @Override
     public void apply(FileSystemOptions opts) {
 
         Objects.requireNonNull(opts);
 
-        FtpFileSystemConfigBuilder.getInstance().setControlEncoding(opts, value);
+        FtpFileSystemConfigBuilder.getInstance().setControlEncoding(opts, value.name());
 
     }
 

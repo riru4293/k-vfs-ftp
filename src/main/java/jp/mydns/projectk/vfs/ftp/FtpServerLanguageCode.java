@@ -29,6 +29,7 @@ import jakarta.json.Json;
 import jakarta.json.JsonValue;
 import java.util.Objects;
 import java.util.ServiceLoader;
+import jp.mydns.projectk.vfs.AbstractFileOption;
 import jp.mydns.projectk.vfs.FileOption;
 import static jp.mydns.projectk.vfs.FileOptionSourceValidator.requireString;
 import org.apache.commons.vfs2.FileSystemOptions;
@@ -50,7 +51,22 @@ import org.apache.commons.vfs2.provider.ftp.FtpFileSystemConfigBuilder;
  * @see FtpFileSystemConfigBuilder#getServerLanguageCode(org.apache.commons.vfs2.FileSystemOptions)
  */
 @FileOption.Name("ftp:serverLanguageCode")
-public class FtpServerLanguageCode extends FtpStringOption {
+public class FtpServerLanguageCode extends AbstractFileOption {
+
+    private final String value;
+
+    /**
+     * Constructor.
+     *
+     * @param value option value
+     * @throws NullPointerException if {@code value} is {@code null}
+     * @since 1.0.0
+     */
+    public FtpServerLanguageCode(String value) {
+
+        this.value = Objects.requireNonNull(value);
+
+    }
 
     /**
      * Constructor.
@@ -62,26 +78,27 @@ public class FtpServerLanguageCode extends FtpStringOption {
      */
     public FtpServerLanguageCode(JsonValue value) {
 
-        this(requireString(value, "ftp:serverLanguageCode"));
-
-    }
-
-    /**
-     * Constructor.
-     *
-     * @param value option value
-     * @throws NullPointerException if {@code value} is {@code null}
-     * @since 1.0.0
-     */
-    public FtpServerLanguageCode(String value) {
-
-        super(value);
+        this.value = requireString(Objects.requireNonNull(value), "ftp:serverLanguageCode");
 
     }
 
     /**
      * {@inheritDoc}
      *
+     * @since 1.0.0
+     */
+    @Override
+    public JsonValue getValue() {
+
+        return Json.createValue(value);
+
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param opts the {@code FileSystemOptions}. This value will be modified.
+     * @throws NullPointerException if {@code opts} is {@code null}
      * @since 1.0.0
      */
     @Override

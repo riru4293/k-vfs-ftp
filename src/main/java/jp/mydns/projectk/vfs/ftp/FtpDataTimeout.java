@@ -30,6 +30,7 @@ import jakarta.json.JsonValue;
 import java.time.Duration;
 import java.util.Objects;
 import java.util.ServiceLoader;
+import jp.mydns.projectk.vfs.AbstractFileOption;
 import jp.mydns.projectk.vfs.FileOption;
 import static jp.mydns.projectk.vfs.FileOptionSourceValidator.requireDuration;
 import org.apache.commons.vfs2.FileSystemOptions;
@@ -50,19 +51,21 @@ import org.apache.commons.vfs2.provider.ftp.FtpFileSystemConfigBuilder;
  * @since 1.0.0
  */
 @FileOption.Name("ftp:dataTimeout")
-public class FtpDataTimeout extends FtpDurationOption {
+public class FtpDataTimeout extends AbstractFileOption {
+
+    private final Duration value;
 
     /**
      * Constructor.
      *
      * @param value option value
      * @throws NullPointerException if {@code value} is {@code null}
-     * @throws IllegalArgumentException if {@code value} is not convertible to type {@link Duration}
+     * @throws IllegalArgumentException if {@code value} is negative
      * @since 1.0.0
      */
-    public FtpDataTimeout(JsonValue value) {
+    public FtpDataTimeout(Duration value) {
 
-        this(requireDuration(value, "ftp:dataTimeout"));
+        this(Json.createValue(Objects.requireNonNull(value).toString()));
 
     }
 
@@ -71,17 +74,32 @@ public class FtpDataTimeout extends FtpDurationOption {
      *
      * @param value option value
      * @throws NullPointerException if {@code value} is {@code null}
+     * @throws IllegalArgumentException if {@code value} is not convertible to positive {@code Duration}
      * @since 1.0.0
      */
-    public FtpDataTimeout(Duration value) {
+    public FtpDataTimeout(JsonValue value) {
 
-        super(value);
+        this.value = requireDuration(Objects.requireNonNull(value), "ftp:dataTimeout");
 
     }
 
     /**
      * {@inheritDoc}
      *
+     * @since 1.0.0
+     */
+    @Override
+    public JsonValue getValue() {
+
+        return Json.createValue(value.toString());
+
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param opts the {@code FileSystemOptions}. This value will be modified.
+     * @throws NullPointerException if {@code opts} is {@code null}
      * @since 1.0.0
      */
     @Override

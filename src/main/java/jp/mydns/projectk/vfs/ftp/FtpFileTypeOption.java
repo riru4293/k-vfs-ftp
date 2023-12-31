@@ -60,6 +60,19 @@ public class FtpFileTypeOption extends AbstractFileOption {
      * Constructor.
      *
      * @param value option value
+     * @throws NullPointerException if {@code value} is {@code null} or if contains {@code null} in {@code value}.
+     * @since 1.0.0
+     */
+    public FtpFileTypeOption(FtpFileType value) {
+
+        this.value = Objects.requireNonNull(value);
+
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param value option value
      * @throws NullPointerException if {@code value} is {@code null}
      * @throws IllegalArgumentException if {@code value} is not convertible to type {@link FtpFileType}
      * @since 1.0.0
@@ -82,19 +95,6 @@ public class FtpFileTypeOption extends AbstractFileOption {
     }
 
     /**
-     * Constructor.
-     *
-     * @param value option value
-     * @throws NullPointerException if {@code value} is {@code null} or if contains {@code null} in {@code value}.
-     * @since 1.0.0
-     */
-    protected FtpFileTypeOption(FtpFileType value) {
-
-        this.value = Objects.requireNonNull(value);
-
-    }
-
-    /**
      * {@inheritDoc}
      *
      * @since 1.0.0
@@ -109,6 +109,8 @@ public class FtpFileTypeOption extends AbstractFileOption {
     /**
      * {@inheritDoc}
      *
+     * @param opts the {@code FileSystemOptions}. This value will be modified.
+     * @throws NullPointerException if {@code opts} is {@code null}
      * @since 1.0.0
      */
     @Override

@@ -60,13 +60,12 @@ public class FtpShortMonthNames extends AbstractFileOption {
      * Constructor.
      *
      * @param values option values
-     * @throws NullPointerException if {@code values} is {@code null}
-     * @throws IllegalArgumentException if {@code values} is not convertible to type {@code List<String>}
+     * @throws NullPointerException if {@code values} is {@code null} or if contains {@code null} in {@code values}.
      * @since 1.0.0
      */
-    public FtpShortMonthNames(JsonValue values) {
+    public FtpShortMonthNames(List<String> values) {
 
-        this.values = requireStringList(Objects.requireNonNull(values), "ftp:shortMonthNames");
+        this.values = List.copyOf(Objects.requireNonNull(values));
 
     }
 
@@ -74,12 +73,13 @@ public class FtpShortMonthNames extends AbstractFileOption {
      * Constructor.
      *
      * @param values option values
-     * @throws NullPointerException if {@code values} is {@code null} or if contains {@code null} in {@code values}.
+     * @throws NullPointerException if {@code values} is {@code null}
+     * @throws IllegalArgumentException if {@code values} is not convertible to type {@code List<String>}
      * @since 1.0.0
      */
-    protected FtpShortMonthNames(List<String> values) {
+    public FtpShortMonthNames(JsonValue values) {
 
-        this.values = List.copyOf(Objects.requireNonNull(values));
+        this.values = requireStringList(Objects.requireNonNull(values), "ftp:shortMonthNames");
 
     }
 
@@ -98,6 +98,8 @@ public class FtpShortMonthNames extends AbstractFileOption {
     /**
      * {@inheritDoc}
      *
+     * @param opts the {@code FileSystemOptions}. This value will be modified.
+     * @throws NullPointerException if {@code opts} is {@code null}
      * @since 1.0.0
      */
     @Override
